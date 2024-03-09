@@ -1,0 +1,57 @@
+import React, { useContext, useEffect } from 'react';
+import './Book.css';
+import { UserContex } from '../../App';
+import { useParams } from 'react-router-dom';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import Button from '@mui/material/Button';
+
+const Book = (props) => {
+    const {bedType} = useParams();
+    const [loggInUser] = useContext(UserContex);
+    const [value, setValue] = React.useState(dayjs('2022-04-17'));
+
+    const handleBooking = () => {
+        const bookings = {...loggInUser, ...value};
+        console.log(bookings);
+        fetch('http://localhost:8000/addBookings', {
+                method: 'POST',
+                body: JSON.stringify(bookings),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+
+    return (
+        <div className='aline-containt'>
+            <h1> Hellow, {loggInUser.name} Let's book a {bedType} Room. </h1>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker', 'DatePicker']}>
+                    <DatePicker
+                       label="Check In Date" 
+                       defaultValue={dayjs('2022-04-17')}
+                     />
+                    <DatePicker
+                       label="Check Out Date"
+                       value={value}
+                       onChange={(newValue) => setValue(newValue)}
+                    />
+                </DemoContainer>
+                <Button onClick={handleBooking} className='buttom' variant="outlined">Book Now</Button>
+            </LocalizationProvider>
+        </div>
+    );
+};
+
+export default Book;
