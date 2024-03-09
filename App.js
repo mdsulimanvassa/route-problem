@@ -1,39 +1,31 @@
-import React, { createContext, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
-import Shop from './components/Shop/Shop';
-import { Route, Routes} from "react-router-dom";
-import Review from './components/Review/Review';
-import Invantory from './components/Invatory/Invantory';
-import NotFount from './components/NotFount/NotFount';
-import ProductDetail from './components/ProductDetial/ProductDetail';
-import Shipment from './components/Shipment/Shipment';
+import Error from './components/Error/Error';
+import Book from './components/Book/Book';
 import Login from './components/Login/Login';
-import PrivatRoute from './components/PrivatRoute/PrivarRoure';
+import Home from './components/Home/Home';
+import { createContext} from 'react';
+import { useState } from 'react';
+import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 
 export const UserContex = createContext();
-
 function App() {
-  const [loggedInUser, setLoggedInUser] = useState(false);
+  const [loggInUser, setLoggInUser] = useState(false);
   return (
-    <UserContex.Provider value={[loggedInUser, setLoggedInUser]}>
+    <UserContex.Provider value={[loggInUser, setLoggInUser]}>
       <Header></Header>
       <Routes>
-          <Route path='/shop' element={<Shop/>}/>
-          <Route path='/review' element={<Review/>}/>
-          <Route path='/invantory' element={<Invantory/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/' element={<Shop/>}/>
-          <Route element={<PrivatRoute/>}>
-            <Route path='/shipment' element={<Shipment/>} />
-          </Route>
-          <Route path='/product/:productKey' element={<ProductDetail/>}/>
-          <Route path='*' element={<NotFount/>}/>
+        <Route path='/' element={<Home/>} />
+        <Route path='/home' element={<Home/>} />
+        <Route element={<PrivateRoutes/>}>
+          <Route path='/book/:bedType' element={<Book/>} exact/>
+        </Route>
+        <Route path='/login' element={<Login/>} />
+        <Route path='*' element={<Error/>} />
       </Routes>
     </UserContex.Provider>
   );
 }
-
-
 
 export default App;
